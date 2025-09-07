@@ -16,7 +16,9 @@ public class Application {
     private String documentNumber;
     private double amount;
     private int term;
-    private String loanType;
-    private String state;
+    private UUID loanTypeId;
+    private String loanTypeCode;
+    private UUID stateId;
+    private String stateCode;
     private boolean active;
 }

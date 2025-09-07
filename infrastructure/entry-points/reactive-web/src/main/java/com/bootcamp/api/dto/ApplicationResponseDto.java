@@ -7,7 +7,5 @@ public record ApplicationResponseDto(
         String documentNumber,
         double amount,
         int term,
-        String loanType,
-        String state,
         boolean active
 ) {}

@@ -5,26 +5,19 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
-@Table("applications")
+@Table("cat_state_application")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class ApplicationEntity {
+public class StateApplicationEntity {
     @Id
     @Column("id")
     private UUID id;
-    @Column("document_number")
-    private String documentNumber;
-    private Double amount;
-    private int term;
-    @Column("loan_type_id")
-    private UUID loanTypeId;
-    @Column("state_id")
-    private UUID stateId;
+    private String code;
+    private String name;
     private boolean active;
 }

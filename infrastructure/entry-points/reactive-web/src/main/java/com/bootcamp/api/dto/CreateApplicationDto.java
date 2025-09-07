@@ -15,5 +15,5 @@ public record CreateApplicationDto (
         int term,
         @NotNull(message = "Debe ingresar el tipo de prestamo")
         @NotBlank(message = "Debe ingresar el tipo de prestamo")
-        String loanType
+        String loanTypeCode
 ) {}

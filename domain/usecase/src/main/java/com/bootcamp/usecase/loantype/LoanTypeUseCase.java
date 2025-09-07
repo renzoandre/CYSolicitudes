@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Log
 @RequiredArgsConstructor
 public class LoanTypeUseCase {
@@ -21,9 +23,13 @@ public class LoanTypeUseCase {
     public Mono<LoanType> findLoanTypeByCode(String code) {
         log.info("Use Case findLoanTypeByCode");
         return loanTypeRepository.findLoanTypeByCode(code)
-                .switchIfEmpty(Mono.error(new LoanTypeNotFoundException(
-                        "El código " + code + " no existe en el sistema"
-                )));
+                .switchIfEmpty(Mono.error(new LoanTypeNotFoundException("El código " + code + " no existe en el sistema")));
+    }
+
+    public Mono<LoanType> findLoanTypeById(UUID id) {
+        log.info("Use Case findLoanTypeById");
+        return loanTypeRepository.findLoanTypeById(id)
+                .switchIfEmpty(Mono.error(new LoanTypeNotFoundException("El identificador de tipo prestamo " + id + " no existe en el sistema")));
     }
 
 }

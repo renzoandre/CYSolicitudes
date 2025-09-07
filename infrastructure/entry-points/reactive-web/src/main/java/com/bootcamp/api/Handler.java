@@ -31,9 +31,6 @@ public class Handler {
                 .onErrorResume(
                         ValidationDtoException.class, ex -> BuildApiResponseHelper.buildError(ex, HttpStatus.BAD_REQUEST)
                 )
-                // .onErrorResume(
-                //        UserExistException.class, ex -> BuildApiResponseHelper.buildError(ex, HttpStatus.CONFLICT)
-                // )
                 .onErrorResume(
                         RuntimeException.class, ex -> BuildApiResponseHelper.buildError(ex, HttpStatus.INTERNAL_SERVER_ERROR)
                 );
