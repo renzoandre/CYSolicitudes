@@ -15,12 +15,13 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @RequiredArgsConstructor
 public class RouterRest {
     private final ApplicationPathsConfig applicationPathsConfig;
-    private final Handler applicatinHandler;
+    private final ApplicationHandler applicationHandler;
     private final LoanTypeHandler loanTypeHandler;
 
     @Bean
     public RouterFunction<ServerResponse> routerFunction() {
-        return route(POST(applicationPathsConfig.getApplication()), applicatinHandler::saveApplication)
-                .andRoute(GET("/api/v1/loanTypeByCode"), loanTypeHandler::findLoanTypeByCode);
+        return route(POST(applicationPathsConfig.getApplication()), applicationHandler::saveApplication)
+                .andRoute(GET("/api/v1/loanTypeByCode"), loanTypeHandler::findLoanTypeByCode)
+                .andRoute(POST("/api/v1/findApplications"), applicationHandler::findApplications);
     }
 }

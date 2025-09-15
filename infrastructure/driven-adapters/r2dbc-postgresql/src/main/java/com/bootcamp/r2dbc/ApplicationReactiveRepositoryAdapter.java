@@ -6,7 +6,6 @@ import com.bootcamp.r2dbc.entity.ApplicationEntity;
 import com.bootcamp.r2dbc.exception.DataValidationException;
 import com.bootcamp.r2dbc.exception.DatabaseUnavailableException;
 import com.bootcamp.r2dbc.helper.ReactiveAdapterOperations;
-import lombok.extern.java.Log;
 import org.reactivecommons.utils.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.UUID;
 
 @Repository
 public class ApplicationReactiveRepositoryAdapter extends ReactiveAdapterOperations<
@@ -49,6 +51,23 @@ public class ApplicationReactiveRepositoryAdapter extends ReactiveAdapterOperati
                             log.error("💥 Error inesperado al guardar solicitud", ex);
                             return new RuntimeException("Error inesperado al guardar solicitud", ex);
                         });
+    }
+
+    @Transactional
+    @Override
+    public Flux<Application> findApplicationsFilter(String documentNumber, UUID loanTypeId, UUID statusApplicationId) {
+        log.info("ApplicationReactiveRepositoryAdapter findApplicationsFilter");
+
+        return findAll()
+                .filter(application -> application.getLoanTypeId().equals(loanTypeId) ||
+                        application.getStateId().equals(statusApplicationId) || application.getDocumentNumber().equals(documentNumber))
+                .doOnNext(app -> log.info("Application encontrado: {}", app))
+                .switchIfEmpty(Flux.empty())
+                .doOnComplete(() -> log.info("2 No se encontraron más applications para documentNumber={}", documentNumber))
+                .onErrorMap(TransientDataAccessResourceException.class,
+                        ex -> new DatabaseUnavailableException("Base de datos no disponible"))
+                .onErrorMap(Exception.class,
+                        ex -> new RuntimeException("Error inesperado al econtrar solicitudes", ex));
     }
 
 }

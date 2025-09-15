@@ -14,8 +14,8 @@ import java.util.UUID;
 public class Application {
     private UUID id;
     private String documentNumber;
-    private double amount;
-    private int term;
+    private Double amount;
+    private Integer term;
     private UUID loanTypeId;
     private String loanTypeCode;
     private UUID stateId;

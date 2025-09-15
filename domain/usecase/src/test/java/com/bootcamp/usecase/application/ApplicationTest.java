@@ -6,6 +6,7 @@ import com.bootcamp.model.loantype.LoanType;
 import com.bootcamp.model.loantype.gateways.LoanTypeRepository;
 import com.bootcamp.model.stateapplication.StateApplication;
 import com.bootcamp.model.stateapplication.gateways.StateApplicationRepository;
+import com.bootcamp.model.user.gateways.UserRepository;
 import com.bootcamp.usecase.loantype.LoanTypeUseCase;
 import com.bootcamp.usecase.stateapplication.StateApplicationUseCase;
 import lombok.extern.java.Log;
@@ -30,6 +31,7 @@ public class ApplicationTest {
     private LoanTypeRepository loanTypeRepository;
     private StateApplicationRepository stateApplicationRepository;
     private StateApplicationUseCase stateApplicationUseCase;
+    private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {
@@ -38,14 +40,16 @@ public class ApplicationTest {
         loanTypeUseCase = new LoanTypeUseCase(loanTypeRepository);
         stateApplicationRepository = mock(StateApplicationRepository.class);
         stateApplicationUseCase = new StateApplicationUseCase(stateApplicationRepository);
-        applicationUseCase = new ApplicationUseCase(applicationRepository, loanTypeUseCase, stateApplicationUseCase);
+        applicationUseCase = new ApplicationUseCase(applicationRepository, loanTypeUseCase, stateApplicationUseCase, userRepository);
     }
 
     @Test
     void shouldSaveApplicationTest() {
+        String token = "";
+
         Application application = Application.builder()
                 .documentNumber("57685956")
-                .amount(4834323)
+                .amount(4834323.0)
                 .term(6)
                 .loanTypeCode("HIP")
                 .active(true)
@@ -74,7 +78,7 @@ public class ApplicationTest {
                 });
 
         // Act & Assert
-        StepVerifier.create(applicationUseCase.saveApplication(application))
+        StepVerifier.create(applicationUseCase.saveApplication(application, token))
                 .expectNextMatches(u -> u.getDocumentNumber().equals("57685956"))
                 .verifyComplete();
 
@@ -87,9 +91,11 @@ public class ApplicationTest {
 
     @Test
     void shouldNotSaveApplicationTest() {
+        String token = "";
+
         Application application = Application.builder()
                 .documentNumber("57685956")
-                .amount(4834323)
+                .amount(4834323.0)
                 .term(6)
                 .loanTypeCode("HIPO")
                 .active(true)
@@ -111,7 +117,7 @@ public class ApplicationTest {
         when(stateApplicationRepository.findStateApplicationByCode(stateApplication.getCode()))
                 .thenReturn(Mono.just(stateApplication));
 
-        StepVerifier.create(applicationUseCase.saveApplication(application))
+        StepVerifier.create(applicationUseCase.saveApplication(application, token))
                 .expectError()
                 .verify();
     }
